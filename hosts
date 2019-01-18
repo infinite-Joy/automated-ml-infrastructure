@@ -1,0 +1,1 @@
+tag_AutomatedML_cluster ansible_host=ec2-3-87-224-30.compute-1.amazonaws.com ansible_ssh_private_key_file=/Users/joydeep/Documents/security/aws/joydeep_personal.pem ansible_user=ubuntu
