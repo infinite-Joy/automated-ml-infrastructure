@@ -67,3 +67,34 @@
         name: keras
         state: present
         executable: pip3
+
+    - name: install jupyter
+      tags: jupyter
+      pip:
+        name: jupyter
+        state: present
+        executable: pip3
+
+    - name: check to see if the config file exists
+      stat:
+        path: /home/ubuntu/.jupyter/jupyter_notebook_config.py
+      register: config_exists
+      become: true
+      tags: jupyter
+
+    - name: configure jupyter
+      command: /home/ubuntu/.local/bin/jupyter notebook --generate-config
+      when: config_exists.stat.exists == False
+      tags: jupyter
+
+    - name: set open browser to false
+      lineinfile: dest=/home/ubuntu/.jupyter/jupyter_notebook_config.py line="c.NotebookApp.open_browser = False"
+      tags: jupyter
+
+    - name: set jupyter password
+      lineinfile: dest=/home/ubuntu/.jupyter/jupyter_notebook_config.py line="c.NotebookApp.password = u'sha1:8d64b265f1bd:8d8e1321bb337c8193e7e6a56c7e5ce9d11b44aa'"
+      tags: jupyter
+
+    - name: run jupyter server
+      shell: nohup /home/ubuntu/.local/bin/jupyter notebook --port=8888  --no-browser --ip=0.0.0.0 >>jupyter.log 2>&1 &
+      tags: jupyter
